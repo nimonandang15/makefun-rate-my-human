@@ -21,6 +21,12 @@ if (chars < 1 || chars > 200) {
 if (text.trim().length === 0) {
   throw new Error("entry is only white space");
 }
+// A line break would pass the length gate but break the one-line review;
+// reject it with its own message instead of the generic control-character
+// error below, so a bad edit fails with the reason that actually matters.
+if (/[\r\n]/.test(text)) {
+  throw new Error("entry must be a single line (no line breaks)");
+}
 // Control characters would pass the length gate but break a one-line
 // display or a strict judge; the entry must be printable text only.
 if (/[\u0000-\u001f\u007f]/.test(text)) {
